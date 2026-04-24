@@ -12,7 +12,7 @@ def extract_pdf_data(file_path):
         return None
         
     # Thay đổi model name để tránh lỗi 404 trên các phiên bản API cũ
-    model = genai.GenerativeModel('gemini-2.5-flash')
+    model = genai.GenerativeModel('gemma-4-31b-it')
     
     print(f"Uploading {file_path} to Gemini...")
     try:

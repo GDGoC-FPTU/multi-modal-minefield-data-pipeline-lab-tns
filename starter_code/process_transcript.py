@@ -31,7 +31,7 @@ def clean_transcript(file_path):
         "author": "Speaker 1",
         "timestamp": None,
         "source_metadata": {
-            "mentioned_price_vnd": mentioned_price_vnd,
+            "detected_price_vnd": mentioned_price_vnd,
             "detected_phrase_nam_tram_nghin": bool(price_wording_match),
             "detected_numeric_500000": bool(explicit_digits_match),
         },
