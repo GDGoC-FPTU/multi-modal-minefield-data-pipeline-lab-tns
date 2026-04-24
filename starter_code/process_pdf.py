@@ -36,7 +36,7 @@ Output exactly as a JSON object matching this exact format:
     
     print("Generating content from PDF using Gemini...")
     response = model.generate_content([pdf_file, prompt])
-    content_text = response.text
+    content_text = response.text or ""
     
     # Simple cleanup if the response is wrapped in markdown json block
     if content_text.startswith("```json"):
@@ -46,5 +46,23 @@ Output exactly as a JSON object matching this exact format:
     if content_text.startswith("```"):
         content_text = content_text[3:]
         
-    extracted_data = json.loads(content_text.strip())
+    try:
+        extracted_data = json.loads(content_text.strip())
+    except json.JSONDecodeError:
+        return {
+            "document_id": "pdf-doc-001",
+            "content": f"Raw Gemini response: {content_text.strip()}",
+            "source_type": "PDF",
+            "author": "Unknown",
+            "timestamp": None,
+            "source_metadata": {"original_file": os.path.basename(file_path), "parse_error": True},
+        }
+
+    extracted_data.setdefault("document_id", "pdf-doc-001")
+    extracted_data.setdefault("source_type", "PDF")
+    extracted_data.setdefault("author", "Unknown")
+    extracted_data.setdefault("timestamp", None)
+    extracted_data.setdefault("source_metadata", {"original_file": os.path.basename(file_path)})
+    if isinstance(extracted_data["source_metadata"], dict):
+        extracted_data["source_metadata"].setdefault("original_file", os.path.basename(file_path))
     return extracted_data
